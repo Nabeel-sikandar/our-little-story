@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Little Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Dancing+Script:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div id="loader">Loading your story...</div>
+
+  <!-- Intro Scroll-Scrubbing Section -->
+  <section id="intro-section">
+    <div id="canvas-container">
+      <canvas id="frame-canvas"></canvas>
+    </div>
+  </section>
+
+  <div id="scroll-hint">
+    SCROLL TO OPEN
+    <span>↓</span>
+  </div>
+
+  <!-- ===== PHOTO GALLERY SECTION ===== -->
+  <section id="gallery-section">
+    <h2 class="section-title">Our Moments Together</h2>
+    <div class="title-divider">✦ ✦ ✦</div>
+    <div class="gallery-grid" id="gallery-grid">
+      <!-- Photos yahan JavaScript se automatically add hongi -->
+    </div>
+  </section>
+
+  <!-- ===== WISHES / DUA SECTION ===== -->
+  <section id="wishes-section">
+    <div class="aurora-bg"></div>
+    <div class="wishes-content" id="wishes-reveal">
+      <div class="corner corner-tl">✦</div>
+      <div class="corner corner-tr">✦</div>
+      <div class="corner corner-bl">✦</div>
+      <div class="corner corner-br">✦</div>
+
+      <div class="wishes-icon">🕯️</div>
+      <h2 class="section-title shimmer-text">Wishes For You</h2>
+      <div class="title-divider">✦ ✦ ✦</div>
+
+      <p class="wishes-text">
+        <span class="reveal-line">Dear Fatima,</span>
+        <span class="reveal-line">May Allah bless your new beginning with endless love,</span>
+        <span class="reveal-line">peace, and happiness. As you step into this beautiful</span>
+        <span class="reveal-line">new chapter of your life, know that our friendship</span>
+        <span class="reveal-line">will always remain one of the sweetest stories ever told.</span>
+        <span class="reveal-line">Wishing you a lifetime of laughter, comfort, and a love</span>
+        <span class="reveal-line">that only grows deeper with every passing day. 💍</span>
+      </p>
+      <p class="wishes-signature reveal-line">— With all my love, Arooba</p>
+    </div>
+  </section>
+
+  <!-- ===== STACKING NOTES CARDS SECTION ===== -->
+  <section id="notes-section">
+    <h2 class="section-title shimmer-text">A Few Little Notes</h2>
+    <div class="title-divider">✦ ✦ ✦</div>
+    <p class="notes-hint">Keep scrolling to read each one...</p>
+
+    <div id="notes-scroll-track">
+      <div id="notes-sticky">
+        <div id="notes-cards-container"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL PAGE ===== -->
+  <section id="final-section">
+    <div class="aurora-bg final-aurora"></div>
+    <div class="final-content" id="final-reveal">
+      <div class="gift-box-wrap">
+        <svg class="gift-box-svg" viewBox="0 0 120 120" width="100" height="100">
+          <rect x="20" y="55" width="80" height="50" rx="4" fill="#e85d9e"/>
+          <rect x="20" y="55" width="80" height="14" fill="#c9437e"/>
+          <rect x="52" y="55" width="16" height="50" fill="#f5e3a8"/>
+          <g class="gift-lid">
+            <rect x="14" y="40" width="92" height="18" rx="4" fill="#f5e3a8"/>
+            <path d="M60 40 C40 10, 20 20, 35 38 C45 44, 55 42, 60 40 Z" fill="#e85d9e"/>
+            <path d="M60 40 C80 10, 100 20, 85 38 C75 44, 65 42, 60 40 Z" fill="#e85d9e"/>
+          </g>
+        </svg>
+        <div class="gift-burst"></div>
+      </div>
+
+      <h2 class="section-title shimmer-text">One More Thing...</h2>
+      <div class="title-divider">✦ ✦ ✦</div>
+      <p class="final-text">
+        Everything you just saw was only a glimpse.<br>
+        Your real surprise is waiting in your hands.
+      </p>
+      <p class="final-subtext">Go find it, Fatima. 🤍</p>
+    </div>
+  </section>
+
+  <!-- ===== LIGHTBOX (Photo bari dekhne ke liye) ===== -->
+  <div id="lightbox">
+    <button id="lightbox-close">✕</button>
+    <button id="lightbox-prev">‹</button>
+    <img id="lightbox-img" src="" alt="Memory">
+    <button id="lightbox-next">›</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
