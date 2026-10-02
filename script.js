@@ -1,6 +1,17 @@
+// ===== WELCOME SCREEN =====
+document.body.classList.add('no-scroll'); // scroll lock jab tak welcome screen khula hai
+
+const welcomeScreen = document.getElementById('welcome-screen');
+const welcomeOpenBtn = document.getElementById('welcome-open-btn');
+
+welcomeOpenBtn.addEventListener('click', () => {
+  welcomeScreen.classList.add('hidden');
+  document.body.classList.remove('no-scroll');
+  window.scrollTo(0, 0); // ensure top se shuru ho
+});
 // ===== CONFIG =====
-const TOTAL_FRAMES = 68; // apni total frame count yahan daalo
-const FRAME_PATH = (i) => `frames/frame_ (${i}).jpg`;
+const TOTAL_FRAMES = 70; // apni total frame count yahan daalo
+const FRAME_PATH = (i) => `frames/frame_ (${i}).png`;
 // ^ ye "frame_ (1).jpg" se "frame_ (68).jpg" tak expect karta hai
 
 const canvas = document.getElementById('frame-canvas');
@@ -315,3 +326,108 @@ const finalObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.3 });
 
 finalObserver.observe(finalReveal);
+// ===== CURSOR SPARKLE TRAIL =====
+const sparkleColors = ['#f5e3a8', '#e8b8d4', '#c9a8e8', '#fff6d9'];
+let lastSparkleTime = 0;
+
+function createCursorSparkle(x, y) {
+  const now = Date.now();
+  if (now - lastSparkleTime < 60) return; // throttle — har 60ms mein ek sparkle (performance ke liye)
+  lastSparkleTime = now;
+
+  const sparkle = document.createElement('div');
+  sparkle.className = 'cursor-sparkle';
+
+  const size = 3 + Math.random() * 4;
+  const color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
+
+  sparkle.style.width = `${size}px`;
+  sparkle.style.height = `${size}px`;
+  sparkle.style.left = `${x - size / 2}px`;
+  sparkle.style.top = `${y - size / 2}px`;
+  sparkle.style.background = color;
+  sparkle.style.boxShadow = `0 0 ${size * 2}px ${size / 2}px ${color}`;
+
+  document.body.appendChild(sparkle);
+
+  setTimeout(() => sparkle.remove(), 900);
+}
+
+// Desktop: mouse move
+document.addEventListener('mousemove', (e) => {
+  createCursorSparkle(e.clientX, e.clientY);
+});
+
+// Mobile: finger drag
+document.addEventListener('touchmove', (e) => {
+  const touch = e.touches[0];
+  if (touch) createCursorSparkle(touch.clientX, touch.clientY);
+}, { passive: true });
+// ===== FLOATING NAVIGATION DOTS =====
+const navDots = document.querySelectorAll('.nav-dot');
+const navSections = [
+  document.getElementById('intro-section'),
+  document.getElementById('gallery-section'),
+  document.getElementById('wishes-section'),
+  document.getElementById('notes-section'),
+  document.getElementById('final-section')
+];
+
+function updateActiveDot() {
+  const scrollMid = window.scrollY + window.innerHeight / 2;
+
+  let activeIndex = 0;
+  navSections.forEach((section, i) => {
+    if (section.offsetTop <= scrollMid) {
+      activeIndex = i;
+    }
+  });
+
+  navDots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === activeIndex);
+  });
+}
+
+// Smooth scroll jab dot pe click ho
+navDots.forEach((dot) => {
+  dot.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = dot.getAttribute('href').substring(1);
+    const targetSection = document.getElementById(targetId);
+    targetSection.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+window.addEventListener('scroll', updateActiveDot);
+updateActiveDot(); // initial call
+// ===== BACKGROUND MUSIC TOGGLE =====
+const bgMusic = document.getElementById('bg-music');
+const musicToggle = document.getElementById('music-toggle');
+let musicPlaying = false;
+
+musicToggle.addEventListener('click', () => {
+  if (musicPlaying) {
+    bgMusic.pause();
+    musicToggle.textContent = '🔇';
+    musicToggle.classList.remove('playing');
+  } else {
+    bgMusic.play().catch(() => {
+      // agar browser block kare to silently fail ho jaye
+    });
+    musicToggle.textContent = '🎵';
+    musicToggle.classList.add('playing');
+  }
+  musicPlaying = !musicPlaying;
+});
+
+// Welcome screen ka "Open" button dabane pe music auto-start karne ki koshish
+// (kyunki ye user ka pehla interaction hai, browsers isse allow kar dete hain)
+welcomeOpenBtn.addEventListener('click', () => {
+  bgMusic.play().then(() => {
+    musicPlaying = true;
+    musicToggle.textContent = '🎵';
+    musicToggle.classList.add('playing');
+  }).catch(() => {
+    // agar autoplay block ho jaye, button manual rahega
+  });
+});
