@@ -11,7 +11,7 @@ welcomeOpenBtn.addEventListener('click', () => {
 });
 // ===== CONFIG =====
 const TOTAL_FRAMES = 70; // apni total frame count yahan daalo
-const FRAME_PATH = (i) => `frames/frame_ (${i}).png`;
+const FRAME_PATH = (i) => `frames/frame_ (${i}).jpg`;
 // ^ ye "frame_ (1).jpg" se "frame_ (68).jpg" tak expect karta hai
 
 const canvas = document.getElementById('frame-canvas');
