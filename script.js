@@ -294,32 +294,100 @@ window.addEventListener('scroll', updateNoteCards);
 window.addEventListener('resize', updateNoteCards);
 updateNoteCards();
 
-// ===== FINAL PAGE: SCROLL-REVEAL + GIFT BURST =====
+// ===== FINAL PAGE: CONSTELLATION + SCROLL-REVEAL =====
 const finalSection = document.getElementById('final-section');
 const finalReveal = document.getElementById('final-reveal');
-const giftBurst = document.querySelector('.gift-burst');
+const constellationCanvas = document.getElementById('constellation-canvas');
+const cCtx = constellationCanvas.getContext('2d');
 
-function triggerGiftBurst() {
-  const colors = ['#f5e3a8', '#e85d9e', '#c9a8e8', '#fff'];
-  for (let i = 0; i < 24; i++) {
-    const sparkle = document.createElement('div');
-    sparkle.className = 'burst-sparkle';
-    sparkle.style.background = colors[i % colors.length];
-    sparkle.style.boxShadow = `0 0 8px 2px ${colors[i % colors.length]}`;
-    const angle = (Math.PI * 2 * i) / 24;
-    const dist = 60 + Math.random() * 50;
-    sparkle.style.setProperty('--bx', `${Math.cos(angle) * dist}px`);
-    sparkle.style.setProperty('--by', `${Math.sin(angle) * dist}px`);
-    giftBurst.appendChild(sparkle);
-    setTimeout(() => sparkle.remove(), 1200);
+let stars = [];
+let constellationActive = false;
+
+function resizeConstellation() {
+  constellationCanvas.width = finalSection.offsetWidth;
+  constellationCanvas.height = finalSection.offsetHeight;
+}
+resizeConstellation();
+window.addEventListener('resize', resizeConstellation);
+
+function createStars() {
+  const count = 70;
+  stars = [];
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * constellationCanvas.width,
+      y: Math.random() * constellationCanvas.height,
+      radius: 0.8 + Math.random() * 1.8,
+      twinkleSpeed: 0.5 + Math.random() * 1.5,
+      twinkleOffset: Math.random() * Math.PI * 2,
+      brightness: 0.4 + Math.random() * 0.6
+    });
   }
+}
+createStars();
+
+// Connect nearby stars with faint lines (constellation effect)
+function getConnections() {
+  const connections = [];
+  const maxDist = 140;
+  for (let i = 0; i < stars.length; i++) {
+    for (let j = i + 1; j < stars.length; j++) {
+      const dx = stars[i].x - stars[j].x;
+      const dy = stars[i].y - stars[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < maxDist) {
+        connections.push([i, j, 1 - dist / maxDist]);
+      }
+    }
+  }
+  return connections;
+}
+const starConnections = getConnections();
+
+let animTime = 0;
+function animateConstellation() {
+  if (!constellationActive) return;
+  animTime += 0.016;
+
+  cCtx.clearRect(0, 0, constellationCanvas.width, constellationCanvas.height);
+
+  // Draw connection lines
+  cCtx.strokeStyle = 'rgba(245, 227, 168, 0.08)';
+  cCtx.lineWidth = 1;
+  starConnections.forEach(([i, j, strength]) => {
+    cCtx.globalAlpha = strength * 0.5;
+    cCtx.beginPath();
+    cCtx.moveTo(stars[i].x, stars[i].y);
+    cCtx.lineTo(stars[j].x, stars[j].y);
+    cCtx.stroke();
+  });
+  cCtx.globalAlpha = 1;
+
+  // Draw twinkling stars
+  stars.forEach(star => {
+    const twinkle = 0.6 + 0.4 * Math.sin(animTime * star.twinkleSpeed + star.twinkleOffset);
+    const alpha = star.brightness * twinkle;
+    cCtx.beginPath();
+    cCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+    cCtx.fillStyle = `rgba(255, 246, 217, ${alpha})`;
+    cCtx.shadowColor = 'rgba(245, 227, 168, 0.8)';
+    cCtx.shadowBlur = 6;
+    cCtx.fill();
+  });
+
+  requestAnimationFrame(animateConstellation);
 }
 
 const finalObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       finalReveal.classList.add('in-view');
-      setTimeout(triggerGiftBurst, 1300);
+      if (!constellationActive) {
+        constellationActive = true;
+        resizeConstellation();
+        createStars();
+        animateConstellation();
+      }
       finalObserver.unobserve(entry.target);
     }
   });
